@@ -133,6 +133,9 @@ $(document).ready(function () {
 <div id="background" class="section level2">
 <h2>Background</h2>
 <p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset)</p>
+</div>
+<div id="data-exploration" class="section level2">
+<h2>Data Exploration</h2>
 <pre class="r"><code>setwd(&quot;C:/Users/rzij/Documents/Data Science Course/Course Project Machine Learning&quot;)
 
 library(caret)</code></pre>
@@ -161,7 +164,13 @@ split &lt;- createDataPartition(training$classe, p = 0.7, list = FALSE)
 training1 &lt;- training[split,]
 training2 &lt;- training[-split,]
 
-# Fit three predict models based on training1, test on training2, compare accuracy. The creation of the models 
+summary(training1$classe)</code></pre>
+<pre><code>##    A    B    C    D    E 
+## 3906 2658 2396 2252 2525</code></pre>
+</div>
+<div id="create-models" class="section level2">
+<h2>Create Models</h2>
+<pre class="r"><code># Fit three predict models based on training1, test on training2, compare accuracy. The creation of the models 
 # is now commented because they take long to run. Instead i load the environment
 load(&quot;ML algorithms.RData&quot;)
 trainctrl &lt;- trainControl(verboseIter = TRUE)
@@ -181,6 +190,35 @@ rpartPredict &lt;- confusionMatrix(predict(rpartModel, training2), training2$cla
 rpartPredict$overall[1]</code></pre>
 <pre><code>##  Accuracy 
 ## 0.4876805</code></pre>
+<pre class="r"><code># Apply the random forest model on the test set
+rfPredictTest &lt;- predict(rfModel, testing)
+submission &lt;- data.frame(id = testing$problem_id, prediction = rfPredictTest)
+submission</code></pre>
+<pre><code>##    id prediction
+## 1   1          B
+## 2   2          A
+## 3   3          B
+## 4   4          A
+## 5   5          A
+## 6   6          E
+## 7   7          D
+## 8   8          B
+## 9   9          A
+## 10 10          A
+## 11 11          B
+## 12 12          C
+## 13 13          B
+## 14 14          A
+## 15 15          E
+## 16 16          E
+## 17 17          A
+## 18 18          B
+## 19 19          B
+## 20 20          B</code></pre>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The random forest performance best. Based on the analysis.</p>
 <pre class="r"><code># Apply the random forest model on the test set
 rfPredictTest &lt;- predict(rfModel, testing)
 submission &lt;- data.frame(id = testing$problem_id, prediction = rfPredictTest)
